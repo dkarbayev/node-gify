@@ -59,6 +59,8 @@ function gify(input, output, opts, fn) {
   if (w) scale = w + ':-1';
   else if (h) scale = '-1:' + h;
   else scale = '500:-1';
+  
+  var crop = opts.crop;
 
   // tmpfile(s)
   var id = uid(10);
@@ -87,7 +89,11 @@ function gify(input, output, opts, fn) {
     // convert to gif
     var cmd = ['ffmpeg'];
     cmd.push('-i', input);
-    cmd.push('-filter:v', 'scale=' + scale);
+    var filters = 'scale=' + scale;
+    if (crop) {
+      filters += ',crop=' + crop;
+    }
+    cmd.push('-filter:v', filters);
     cmd.push('-r', String(rate));
     if (opts.start) cmd.push('-ss', String(opts.start));
     if (opts.duration) cmd.push('-t', String(opts.duration));
